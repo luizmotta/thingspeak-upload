@@ -6,11 +6,26 @@ $lastprocessedfile = $logfile . ".lastprocessed";
 $lineold = "";
 $history = array();
 
-exec("ps aux | grep -i '" . pathinfo(__FILE__, PATHINFO_BASENAME) . "' | grep -v grep", $pids);
-if ( count($pids) > 2 ) {
-        print_r($pids);
-        die("Already running!");
+ 
+// Check for another running instance
+$lock_file = fopen(__FILE__.'.pid', 'c');
+$got_lock = flock($lock_file, LOCK_EX | LOCK_NB, $wouldblock);
+if ($lock_file === false || (!$got_lock && !$wouldblock)) {
+    throw new Exception(
+        "Unexpected error opening or locking lock file. Perhaps you " .
+        "don't  have permission to write to the lock file or its " .
+        "containing directory?"
+    );
 }
+else if (!$got_lock && $wouldblock) {
+    exit("Another instance is already running; terminating.\n");
+}
+
+// Lock acquired; let's write our PID to the lock file for the convenience
+// of humans who may wish to terminate the script.
+ftruncate($lock_file, 0);
+fwrite($lock_file, getmypid() . "\n");
+
 
 function raise_alert( $msg ) {
 	//echo $msg;
@@ -123,3 +138,8 @@ foreach ( $log as $linenumber => $line ) {
         }
 }
 
+// All done; we blank the PID file and explicitly release the lock 
+// (although this should be unnecessary) before terminating.
+ftruncate($lock_file, 0);
+flock($lock_file, LOCK_UN);
+?>
