@@ -1,6 +1,7 @@
 #!/usr/bin/php
 <?php
 include 'config.php';
+
 $lastprocessedfile = $logfile . ".lastprocessed";
 $lineold = "";
 $history = array();
@@ -13,7 +14,7 @@ if ( count($pids) > 2 ) {
 
 function raise_alert( $msg ) {
 	//echo $msg;
-	mail( $email_alert, $email_subject, $msg );
+	mail( $email_to, $email_subject, $msg );
 }
 
 function check_boundaries( $history, $datapoint ) {
@@ -111,6 +112,7 @@ foreach ( $log as $linenumber => $line ) {
         //print_r(DateTime::getLastErrors());
 
         $url = "https://api.thingspeak.com/update?api_key=" . $channel_key . "&field1=" . $data . "&created_at=" . $dt->format("Y-m-d\TH:i:s\Z0000");;
+	//echo $url . PHP_EOL;
        	$result = @file_get_contents( $url );
 
         if ( $result == "" ) {
