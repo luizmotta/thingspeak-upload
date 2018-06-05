@@ -1,0 +1,27 @@
+<?php
+
+/* Should point to MessageBridge logfile */
+$logfile = "/root/WirelessThings-LaunchPad/MessageBridge/CSVLogs/CSV_MessageBridge.csv";
+
+/* Recipient and subject of alert emails when sensors are out of boundaries
+$email_to = "your_username@your_domain.com";
+$email_subject = "Sensor alert";
+
+/*
+Fill the $channel array with WirelessThings sensor ID, monitored field, ThingSpeak ID and channel's API key, and limits for alerts
+In the example below:
+  AA = the sensor ID
+  TEMP / BATT = the monitored fields (temperature, battery)
+  12345 / 67890 = ThingSpeak ID for the each field (12345 = temperature, 67890 = battery)
+  XXXXXXXXXXXXXXXX / YYYYYYYYYYYYYYYY = ThingSpeak API write key for the respective fields
+  max => 30 = maximum temperature allowed without alerts
+  min => 20 = minimum temperature allowed without alerts
+*/
+
+$channel["AA"]["TEMP"]["id"] = "12345";
+$channel["AA"]["TEMP"]["key"] = "XXXXXXXXXXXXXXXX";
+$channel["AA"]["TEMP"]["limits"] = [ "max" => 30, "min" => 20 ];
+$channel["AA"]["BATT"]["id"] = "67890";
+$channel["AA"]["BATT"]["key"] = "YYYYYYYYYYYYYYYY";
+
+?>
